@@ -1,0 +1,99 @@
+{
+  "name": "Practice - Google Maps Scraper",
+  "nodes": [
+    {
+      "parameters": {
+        "url": "https://api.apify.com/v2/acts/lukaskrivka~google-maps-with-contact-details/run-sync-get-dataset-items?token=apify_api_TeHdeDATVqX1B0gMpyHcr53mQrCS692xJWPM",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"language\": \"en\",\n    \"locationQuery\": \"{{ $json.location }}\",\n    \"maxCrawledPlacesPerSearch\": 5,\n    \"searchStringsArray\": [\n        \"{{ $json.query }}\"\n    ],\n    \"skipClosedPlaces\": false\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        220,
+        0
+      ],
+      "id": "d309c920-2942-4016-b86a-1797bf0cd763",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "521611e3-878d-4061-9384-dda01a727296",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "title, address, phone, categoryName",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        440,
+        0
+      ],
+      "id": "54312403-14cc-45be-a9e2-64cf0d852760",
+      "name": "Split Out"
+    }
+  ],
+  "pinData": {
+    "When clicking ‘Test workflow’": [
+      {
+        "json": {
+          "query": "dentist",
+          "location": "ottawa"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "ad3481eb-1d61-4163-94b4-43eb8768ea2f",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "5d06c33ed74ff00278d6b820657882855a3d7806c38efc478bed2f3ecf8edfb9"
+  },
+  "id": "SuXdWLafF7BMPRa7",
+  "tags": [
+    {
+      "createdAt": "2025-06-06T20:21:47.066Z",
+      "updatedAt": "2025-06-06T20:21:47.066Z",
+      "id": "ZO91SNoGqTqnitHC",
+      "name": "Free Giveaways"
+    }
+  ]
+}

@@ -1,0 +1,351 @@
+{
+  "name": "Practice - New Lead Reseach",
+  "nodes": [
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.tavily.com/search",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer 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"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"query\": \"Search the web for {{ $json.Name }}\",\n  \"topic\": \"general\",\n  \"search_depth\": \"basic\",\n  \"chunks_per_source\": 3,\n  \"max_results\": 8,\n  \"time_range\": null,\n  \"days\": 7,\n  \"include_answer\": true,\n  \"include_raw_content\": false,\n  \"include_images\": false,\n  \"include_image_descriptions\": false,\n  \"include_domains\": [],\n  \"exclude_domains\": []\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        760,
+        -20
+      ],
+      "id": "0721b4ee-c01a-4cf4-b247-b5608df25044",
+      "name": "Tavily"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "value": "1bh3KS5nnCcdmTSkwiNTdRnKXy8_Bgu4TtgvLZP6Pn7c",
+          "mode": "list",
+          "cachedResultName": "n8n practice",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1bh3KS5nnCcdmTSkwiNTdRnKXy8_Bgu4TtgvLZP6Pn7c/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 441539324,
+          "mode": "list",
+          "cachedResultName": "Lead Research",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1bh3KS5nnCcdmTSkwiNTdRnKXy8_Bgu4TtgvLZP6Pn7c/edit#gid=441539324"
+        },
+        "event": "rowUpdate",
+        "options": {
+          "columnsToWatch": [
+            "Name"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        220,
+        -20
+      ],
+      "id": "a681ba9c-17a9-4355-971b-240ff774426d",
+      "name": "Google Sheets Trigger",
+      "credentials": {
+        "googleSheetsTriggerOAuth2Api": {
+          "id": "sZ4uAHaQF3uI5Mp2",
+          "name": "Google Sheets Trigger account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Article 1:{{ $json.answer }}\nArticle 2:{{ $json.results[0].content }}\nArticle 3:{{ $json.results[4].content }}\n",
+        "options": {
+          "systemMessage": "You are an expert email writer tasked with briefing our lead team on a target company using three provided articles. Your goal is to distill the essential information into a single, concise paragraph that informs and sparks interest. Follow these instructions:\n\nAnalyze the three articles and identify the company’s core business, recent developments or milestones, and any notable challenges or opportunities.\n\nWrite a professional email with:\n\nSubject: A one-line, attention-grabbing summary of the company.\n\nBody: A single paragraph that:\n\nIntroduces the company briefly.\n\nSummarizes only the most critical insights from the articles (background, key news, and why it matters).\n\nUses an informative, engaging tone suited to a sales/lead-generation audience.\n\nDoes not exceed one paragraph in length.\n\nAvoid fluff or unnecessary detail—be precise, clear, and focused on what the lead team needs to know."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        980,
+        -20
+      ],
+      "id": "2b59ab11-76b5-44f0-b4c8-c640805f3ebd",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        880,
+        160
+      ],
+      "id": "38ef7de4-1f25-47a7-ba8a-ececfea5bd79",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "p8UCjIalbKhZg8ql",
+          "name": "OpenAi account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Grab the combined “Subject: …\\n\\nBody: …” string from the ‘output’ field\nconst fullText = $input.first().json.output;\n\n// Split into subject and body parts at the first occurrence of “Body:”\nconst parts = fullText.split(/\\n\\s*Body:\\s*/i);\n\n// Extract and clean up the subject (remove the “Subject:” prefix)\nconst Subject = parts[0].replace(/^Subject:\\s*/i, '').trim();\n\n// Everything after “Body:” is the body text\nconst Body = (parts[1] || '').trim();\n\nreturn [\n  {\n    json: {\n      Subject,\n      Body\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1340,
+        -20
+      ],
+      "id": "3f2675d1-1e4c-4885-a526-4d6128f82200",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1bh3KS5nnCcdmTSkwiNTdRnKXy8_Bgu4TtgvLZP6Pn7c",
+          "mode": "list",
+          "cachedResultName": "n8n practice",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1bh3KS5nnCcdmTSkwiNTdRnKXy8_Bgu4TtgvLZP6Pn7c/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 441539324,
+          "mode": "list",
+          "cachedResultName": "Lead Research",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1bh3KS5nnCcdmTSkwiNTdRnKXy8_Bgu4TtgvLZP6Pn7c/edit#gid=441539324"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $('Google Sheets Trigger').item.json.Name }}",
+            "Research done?": "Yes"
+          },
+          "matchingColumns": [
+            "Name"
+          ],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Research done?",
+              "displayName": "Research done?",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        1640,
+        -20
+      ],
+      "id": "4b8850f8-3e2c-4b5b-8896-cc69e8cf1e1b",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "9TVzYiW8YotAvG1X",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "6bf71c4c-2560-47b4-bec5-e343d06f3970",
+              "leftValue": "={{ $json['Research done?'] }}",
+              "rightValue": "Yes",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        440,
+        -20
+      ],
+      "id": "68fe6694-5c76-4d8a-80d7-aa9e5e5fb1e9",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "sendTo": "zlevesque93@gmail.com",
+        "subject": "={{ $json.Subject }}",
+        "emailType": "text",
+        "message": "=Hi Team, here is some information about our possible client, {{ $('Google Sheets Trigger').item.json.Name }}\n\n{{ $json.Body }}\n\nBest,\nMike",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1480,
+        160
+      ],
+      "id": "c57ca51a-dfd3-4d15-90f6-115ea3184419",
+      "name": "Gmail",
+      "webhookId": "71aac9c9-4d15-434f-9b76-853971be6e32",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "gTQAMJ38Zij2IBn9",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Sheets Trigger": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tavily": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Tavily",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "4c8c0e6e-1df1-4be5-b9a8-8063d8567457",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "5d06c33ed74ff00278d6b820657882855a3d7806c38efc478bed2f3ecf8edfb9"
+  },
+  "id": "ZPt5cFSPicfflGhc",
+  "tags": []
+}

@@ -1,0 +1,534 @@
+{
+  "name": "Practice - Research assistant - Works but not well",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "c974e9d9-950c-4ce2-b55f-c9299d7ac27f",
+      "name": "When chat message received",
+      "webhookId": "90f4439e-299a-4355-8751-6dc646c2d141"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        160,
+        140
+      ],
+      "id": "47d21dac-361f-42c5-a127-bd68595820f6",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "p8UCjIalbKhZg8ql",
+          "name": "OpenAi account 2"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        300,
+        160
+      ],
+      "id": "943a6d83-02be-4769-8b28-b0d770a778b1",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1bh3KS5nnCcdmTSkwiNTdRnKXy8_Bgu4TtgvLZP6Pn7c",
+          "mode": "list",
+          "cachedResultName": "n8n practice",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1bh3KS5nnCcdmTSkwiNTdRnKXy8_Bgu4TtgvLZP6Pn7c/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 291443849,
+          "mode": "list",
+          "cachedResultName": "Lead Generation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1bh3KS5nnCcdmTSkwiNTdRnKXy8_Bgu4TtgvLZP6Pn7c/edit#gid=291443849"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Company name": "={{ $('Loop Over Items').item.json.company }}",
+            "Contact name": "={{ $json.name }}",
+            "Contact Role": "={{ $('Extract Information').item.json.target_role }}",
+            "Contact email": "={{ $json.email }}",
+            "Contact Phone number": "={{ $json.phoneNumber }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Company name",
+              "displayName": "Company name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Contact name",
+              "displayName": "Contact name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Contact Role",
+              "displayName": "Contact Role",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Contact email",
+              "displayName": "Contact email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Contact Phone number",
+              "displayName": "Contact Phone number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        2580,
+        120
+      ],
+      "id": "82dd95e8-00c1-4232-9388-670738495603",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "9TVzYiW8YotAvG1X",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": false
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1520,
+        0
+      ],
+      "id": "5b4e4bcd-7d2f-4f66-b89b-84d43d20bc54",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        940,
+        200
+      ],
+      "id": "4efa45d7-6d9d-47e3-9a28-d8aa928011bf",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "p8UCjIalbKhZg8ql",
+          "name": "OpenAi account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "System:  \nYou are an intelligent data extraction AI trained to support automation workflows. You are a data extraction professional.\n\nUser:  \nYour task is to extract structured information from the following message for use in a research agent.  \nYour task is to output the extracted data in the following JSON format:  \n{\"industry\": \"value\", \"location\": \"value\", \"target_role\": \"value\"}\n\nExample message:  \n\"Find me CEOs of SaaS companies in California\"\n\nAssistant:  \n{\"industry\": \"SaaS\", \"location\": \"California\", \"target_role\": \"CEO\"}\n\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        220,
+        0
+      ],
+      "id": "cad4f6c9-ae63-4aa8-ab58-b81f10e5e176",
+      "name": "Input Information Agent"
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = items[0].json.output;\n\n// Parse the inner stringified JSON\nconst parsed = JSON.parse(raw);\n\nreturn [\n  {\n    json: {\n      industry: parsed.industry,\n      location: parsed.location,\n      target_role: parsed.target_role\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        580,
+        0
+      ],
+      "id": "b42e7a35-6e32-4288-abb2-84d091c5e5ad",
+      "name": "Extract Information"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.tavily.com/search",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer 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"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"query\": \"List the name of 20 {{ $json.industry }} companies in {{ $json.location }} with websites\",\n  \"topic\": \"general\",\n  \"search_depth\": \"basic\",\n  \"chunks_per_source\": 3,\n  \"max_results\": 1,\n  \"time_range\": null,\n  \"days\": 7,\n  \"include_answer\": true,\n  \"include_raw_content\": true,\n  \"include_images\": false,\n  \"include_image_descriptions\": false,\n  \"include_domains\": [],\n  \"exclude_domains\": [],\n  \"country\": null\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        800,
+        0
+      ],
+      "id": "aed72f5e-4b9a-49dc-b7f4-951091c5cd59",
+      "name": "Research companies"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.results[0].raw_content }}{{ $json.answer }}",
+        "options": {
+          "systemMessage": "=I want you to extract the company names from the 2 texts and return them in this format:\n\nCompany 1: [Company Name]\nCompany 2: [Company Name]\nCompany 3: [Company Name]\n...\nAll the way to Company 20. Make sure you have the NAMES OF THE COMPANIES\n\nHere are the two texts to process:\n{{ $json.answer }}\n{{ $json.results[0].raw_content }}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        1020,
+        0
+      ],
+      "id": "1a72dc32-6a40-408a-a0cb-4334703afe1a",
+      "name": "Narrow Research"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1) Grab the full text from the incoming item\nconst text = items[0].json.output;\n\n// 2) Split on the actual newline character\nconst lines = text.split('\\n');\n\n// 3) Map each line (\"Company 1: Ace Auto\") to an object like { json: { company: \"Ace Auto\" } }\nconst outputItems = lines.map(line => {\n  const parts = line.split(': ');\n  return {\n    json: {\n      company: parts[1].trim()\n    }\n  };\n});\n\n// 4) Return the array of objects\nreturn outputItems;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1340,
+        0
+      ],
+      "id": "7d3aecf1-8f95-4dcb-9dec-943cb1f2e59c",
+      "name": "Extract Companies"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.tavily.com/search",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer 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"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"query\": \"{{ $json.company }} {{ $('Extract Information').item.json.target_role }} Name Email and Phone number\",\n  \"topic\": \"general\",\n  \"search_depth\": \"basic\",\n  \"chunks_per_source\": 3,\n  \"max_results\": 1,\n  \"time_range\": null,\n  \"days\": 7,\n  \"include_answer\": true,\n  \"include_raw_content\": true,\n  \"include_images\": false,\n  \"include_image_descriptions\": false,\n  \"include_domains\": [],\n  \"exclude_domains\": [],\n  \"country\": null\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1760,
+        100
+      ],
+      "id": "e7e042c0-68ac-48a6-a92e-02d8dd8a9748",
+      "name": "Search Contact Information"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1880,
+        340
+      ],
+      "id": "d3acd4b5-0c91-4703-908b-ab692722d80a",
+      "name": "OpenAI Chat Model2",
+      "credentials": {
+        "openAiApi": {
+          "id": "p8UCjIalbKhZg8ql",
+          "name": "OpenAi account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the input text from the JSON output of the previous node\nconst text = $input.first().json.output;\n\n// Split the text into lines using the newline character\nconst lines = text.split('\\n');\n\n// Initialize an object to store the results\nconst result = {};\n\n// Loop through each line to extract the key/value pairs\nlines.forEach(line => {\n  // Split the line into key and value; \"shift\" gets rid of the key portion\n  const parts = line.split(':');\n  if (parts.length >= 2) {\n    // Extract the key and join back the remaining parts (in case the value contains colons)\n    const key = parts.shift().trim().toLowerCase();\n    const value = parts.join(':').trim();\n\n    // Map each expected key to a property in the result object\n    if (key === 'name') {\n      result.name = value;\n    } else if (key === 'email') {\n      result.email = value;\n    } else if (key === 'phone number') {\n      result.phoneNumber = value;\n    }\n  }\n});\n\n// Return the result as a new JSON object\nreturn [{ json: result }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2360,
+        120
+      ],
+      "id": "2f6af538-43b1-4131-9984-1cc9bdf93f5b",
+      "name": "Ready for Sheet"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.answer }}",
+        "options": {
+          "systemMessage": "=You are a smart AI parsing assistant. Your task is to extract a person’s contact information from the raw text provided in the variable `{{ $json.answer }}`. The raw text may contain a name, an email address, and a phone number—possibly mixed in with other words or sentences. \n\n**Instructions:**\n1. Read the entire contents of `{{ $json.answer }}`.\n2. Identify exactly one “Name,” one “Email,” and one “Phone number” within that text.\n3. Output only these three lines, in this exact format (no extra punctuation or commentary):\n\n   name: [Person’s full name]  \n   email: [Person’s email address]  \n   phone number: [Person’s phone number]\n\n4. If any field is missing or cannot be found, output:\n   - `name: Not found` \n   - `email: Not found` \n   - `phone number: Not found`\n   on its respective line.  \n\n**Example:**  \nIf `{{ $json.answer }}` is:  \n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        1980,
+        100
+      ],
+      "id": "639e2295-e343-48fb-8997-03430f927579",
+      "name": "Extract Contact Information"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Input Information Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Input Information Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Input Information Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Search Contact Information",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Narrow Research",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Input Information Agent": {
+      "main": [
+        [
+          {
+            "node": "Extract Information",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Information": {
+      "main": [
+        [
+          {
+            "node": "Research companies",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Research companies": {
+      "main": [
+        [
+          {
+            "node": "Narrow Research",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Narrow Research": {
+      "main": [
+        [
+          {
+            "node": "Extract Companies",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Companies": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search Contact Information": {
+      "main": [
+        [
+          {
+            "node": "Extract Contact Information",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Extract Contact Information",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ready for Sheet": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Contact Information": {
+      "main": [
+        [
+          {
+            "node": "Ready for Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "0cf3ab9b-66cb-42cc-be02-c501e081dc85",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "5d06c33ed74ff00278d6b820657882855a3d7806c38efc478bed2f3ecf8edfb9"
+  },
+  "id": "gtfwQUizZnC9mKCo",
+  "tags": []
+}

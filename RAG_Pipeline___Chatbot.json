@@ -1,0 +1,420 @@
+{
+  "name": "Practice - RAG Pipeline & Chatbot",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "1iMFf2q8RR7zjuM9ZNgQozhhhQt10ph7u",
+          "mode": "list",
+          "cachedResultName": "RoboSprout",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1iMFf2q8RR7zjuM9ZNgQozhhhQt10ph7u"
+        },
+        "event": "fileCreated",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        -40,
+        0
+      ],
+      "id": "83f9bddc-aaea-40d2-b96d-3b9594dd6ea4",
+      "name": "Google Drive Trigger",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "xvciVegAq60wKFGb",
+          "name": "Google Drive account - Chat Support"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        120,
+        0
+      ],
+      "id": "01bffe48-ba9d-4d5a-8665-3d5f6744b1cc",
+      "name": "Google Drive",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "xvciVegAq60wKFGb",
+          "name": "Google Drive account - Chat Support"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Pinecone is used to narrow the search. This means the AI won't have to search the whole document instead just relevant parts. It searches only the relevant information not word by word search",
+        "height": 240
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        440,
+        -240
+      ],
+      "id": "ca83352a-ff08-400d-a30b-f3549e074768",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        20,
+        420
+      ],
+      "id": "7b3bad4c-a9c4-44b4-bd6c-4fe0bbda693c",
+      "name": "When chat message received",
+      "webhookId": "59fd3dc5-0225-4e40-9f4f-49de24473c75"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "You are RoboSprout Bot, an expert assistant trained to provide accurate, concise answers about RoboSprout Learning — a robotics and STEM education company for kids. You are connected to a Pinecone vector database which contains all your knowledge, extracted and indexed from official company documents (including a PDF and other sources).\n\nKnowledge Source:\n- You have no internal memory or external world knowledge.\n- Your only source of truth is the data embedded and retrieved from the Pinecone node you are connected to.\n- You must perform a semantic search in Pinecone after every question.\n\nCore Instructions:\n1. ALWAYS use Pinecone for every response, including follow-up questions.\n2. Base your answers ONLY on what is found in Pinecone.\n   - If the information is not found, respond with: “I don’t see that in the provided data.”\n3. Responses must be concise and factual:\n   - Use 1–2 short paragraphs or a clear bullet list.\n   - No fluff, no speculation, no external facts.\n4. If a follow-up question lacks context, politely ask for clarification before answering.\n5. Match RoboSprout’s tone: friendly, helpful, and professional — but never casual or vague.\n\nExample Behavior:\n- Q: “What kits do you use for 8-year-olds?”\n  A: “According to the document, RoboSprout uses LEGO SPIKE kits and micro:bit boards for children ages 8–12.”\n- Q: “Do you offer online classes in the summer?”\n  A: “Yes. The data shows RoboSprout offers online summer camps with mailed kits.”\n- Q: “Do you teach AI?”\n  A: “Yes, for ages 13–16. RoboTech Masters includes AI and machine learning concepts.”\n- Q: “What are your prices?”\n  A: “I don’t see that in the provided data.”\n\nFinal Reminder:\nYou are a Pinecone-backed assistant. You must query the Pinecone database for all answers. Never invent or infer.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        240,
+        420
+      ],
+      "id": "6581a2c9-1285-413c-a51f-9f08bf8f1a16",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        180,
+        580
+      ],
+      "id": "04070c2b-d1d4-4437-b90f-dfb7a8b45b13",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "p8UCjIalbKhZg8ql",
+          "name": "OpenAi account 2"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        280,
+        580
+      ],
+      "id": "9680bde0-09b1-447a-903a-735ced5572cf",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "robosprout",
+          "mode": "list",
+          "cachedResultName": "robosprout"
+        },
+        "options": {
+          "pineconeNamespace": "TEST"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.1,
+      "position": [
+        600,
+        0
+      ],
+      "id": "536baab4-508f-4fad-a275-87002ef1daf9",
+      "name": "Pinecone Vector Store",
+      "credentials": {
+        "pineconeApi": {
+          "id": "yZh8M2Gjhef9kjXt",
+          "name": "RAG"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        540,
+        140
+      ],
+      "id": "e1dbe77f-a865-4226-a373-4ba79705909b",
+      "name": "Embeddings OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "p8UCjIalbKhZg8ql",
+          "name": "OpenAi account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1,
+      "position": [
+        760,
+        140
+      ],
+      "id": "5586057d-f74e-4a4a-bf1a-fe72426d09d4",
+      "name": "Default Data Loader"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "typeVersion": 1,
+      "position": [
+        780,
+        280
+      ],
+      "id": "e1b3aef3-7393-4318-ae77-fc12fbbf5384",
+      "name": "Recursive Character Text Splitter"
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolName": "__default__",
+        "toolDescription": "Use this tool to answer questions about RoboSprout",
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "robosprout",
+          "mode": "list",
+          "cachedResultName": "robosprout"
+        },
+        "topK": 48,
+        "options": {
+          "pineconeNamespace": "TEST"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.1,
+      "position": [
+        560,
+        600
+      ],
+      "id": "8a6103a1-2069-45f0-a801-c66944bf2d07",
+      "name": "Pinecone Vector Store1",
+      "credentials": {
+        "pineconeApi": {
+          "id": "yZh8M2Gjhef9kjXt",
+          "name": "RAG"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        660,
+        820
+      ],
+      "id": "ea4067ac-393c-4341-b860-381f87f184e2",
+      "name": "Embeddings OpenAI1",
+      "credentials": {
+        "openAiApi": {
+          "id": "p8UCjIalbKhZg8ql",
+          "name": "OpenAi account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        340,
+        0
+      ],
+      "id": "91aa1bb3-0083-4f9b-8e11-b38450369e98",
+      "name": "Extract from File"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Drive Trigger": {
+      "main": [
+        [
+          {
+            "node": "Google Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        []
+      ]
+    },
+    "Embeddings OpenAI": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recursive Character Text Splitter": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pinecone Vector Store1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI1": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store1",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "ae353aeb-8f24-4eff-bd14-34b1fd7b2780",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "5d06c33ed74ff00278d6b820657882855a3d7806c38efc478bed2f3ecf8edfb9"
+  },
+  "id": "PfmbkedPxTLj3IdC",
+  "tags": []
+}

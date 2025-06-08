@@ -1,0 +1,156 @@
+{
+  "name": "Practice - Finish Appointment",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "value": "1bh3KS5nnCcdmTSkwiNTdRnKXy8_Bgu4TtgvLZP6Pn7c",
+          "mode": "list",
+          "cachedResultName": "n8n practice",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1bh3KS5nnCcdmTSkwiNTdRnKXy8_Bgu4TtgvLZP6Pn7c/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Post service customer feedback",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1bh3KS5nnCcdmTSkwiNTdRnKXy8_Bgu4TtgvLZP6Pn7c/edit#gid=0"
+        },
+        "event": "rowUpdate",
+        "options": {
+          "columnsToWatch": [
+            "Finished?"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "5e4d8a70-0c00-4a59-8991-82e23a18ed6b",
+      "name": "Google Sheets Trigger",
+      "credentials": {
+        "googleSheetsTriggerOAuth2Api": {
+          "id": "sZ4uAHaQF3uI5Mp2",
+          "name": "Google Sheets Trigger account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "89a555d7-6686-43ec-9cfd-a9ae9b06c977",
+              "leftValue": "={{ $json['Finished?'] }}",
+              "rightValue": "Yes",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "01257260-2543-4d2d-afe9-903452caed5d",
+              "leftValue": "={{ $json['Finished?'] }}",
+              "rightValue": "yes",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        220,
+        0
+      ],
+      "id": "0cf161ca-b579-4f82-81ae-f9ab29884a63",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.Email }}",
+        "subject": "=Completed  {{ $json['Service Type'] }} for {{ $json.Name }}",
+        "emailType": "text",
+        "message": "=Hi {{ $json.Name }},\n\nWe’re happy to inform you that your {{ $json['Service Type'] }} for your {{ $json['Vehicle Type'] }} has been successfully completed.\n\nYou can pick up your vehicle anytime during our regular work hours (Mon–Fri, 9 am–5 pm).\n\nIf you’d like to give us feedback, please fill out our survey here:\nhttps://docs.google.com/forms/d/e/1FAIpQLScXH32w4-8uEtTMzOBDOvfFlMbdOFbdBjRZC3MBP8wRypjGhg/viewform?usp=dialog \nThank you for choosing us!\n\nSincerely,\nCompany X\n",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        440,
+        -100
+      ],
+      "id": "63c08b18-a2b7-47b7-bbef-a100d28c1409",
+      "name": "Gmail",
+      "webhookId": "6219c607-fb0f-4813-a9b4-af372f004e07",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "gTQAMJ38Zij2IBn9",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Sheets Trigger": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "03228102-f429-4775-b525-4d62f4a2f1e8",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "5d06c33ed74ff00278d6b820657882855a3d7806c38efc478bed2f3ecf8edfb9"
+  },
+  "id": "uZN69vXyDX213G5R",
+  "tags": []
+}

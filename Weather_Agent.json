@@ -1,0 +1,146 @@
+{
+  "name": "Practice - Weather Agent",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "78d182a7-4399-452d-b20b-9702058c15e8",
+      "name": "When clicking ‘Test workflow’"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 5
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        20,
+        180
+      ],
+      "id": "59d0ea67-3af9-4885-9c28-9038cdafec64",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "https://api.open-meteo.com/v1/forecast?latitude=45.4201&longitude=75.7003&hourly=temperature_2m,precipitation_probability&timezone=America%2FNew_York&forecast_days=1",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        240,
+        180
+      ],
+      "id": "2cc247fe-d67d-4909-b7fc-5d8e7d9095b6",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = items[0].json;\n\n// Extract arrays\nconst temperatures = data.hourly.temperature_2m;\nconst times = data.hourly.time;\nconst precipitation = data.hourly.precipitation_probability;\n\n// Find min and max temperature\nlet minTemp = Math.min(...temperatures);\nlet maxTemp = Math.max(...temperatures);\n\n// Find peak precipitation probability and its time\nlet maxPrecip = Math.max(...precipitation);\nlet maxPrecipIndex = precipitation.indexOf(maxPrecip);\nlet maxPrecipTime = times[maxPrecipIndex];\n\n// Output result\nreturn [\n  {\n    json: {\n      minTemperature: minTemp,\n      maxTemperature: maxTemp,\n      peakPrecipitationProbability: maxPrecip,\n      peakPrecipitationTime: maxPrecipTime,\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        460,
+        180
+      ],
+      "id": "07ebae60-2796-4fde-8912-8ed3360dae7c",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "sendTo": "zlevesque93@gmail.com",
+        "subject": "Weather Warning for the day",
+        "emailType": "text",
+        "message": "=Predictions for today's weather:\n\n- 🌡️ Min Temp: {{ $json.minTemperature }}°C  \n- 🔥 Max Temp: {{ $json.maxTemperature }}°C  \n- 🌧️ Peak Chance of Showers: {{ $json.peakPrecipitationProbability }}% at {{ $json.peakPrecipitationTime }}\n\nHave a great day! 🌞\n",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        680,
+        180
+      ],
+      "id": "e94b219a-11ff-48ee-a397-8d653bf0f0aa",
+      "name": "Gmail",
+      "webhookId": "8ff451f2-6e9e-4c3d-9754-6375c2cf5a78",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "gTQAMJ38Zij2IBn9",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "eefaff8c-2ee5-44b3-b725-e087dd9b7da8",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "5d06c33ed74ff00278d6b820657882855a3d7806c38efc478bed2f3ecf8edfb9"
+  },
+  "id": "72Ij2tQl6OwBH8fX",
+  "tags": []
+}
