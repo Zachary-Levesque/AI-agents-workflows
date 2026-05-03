@@ -52,6 +52,19 @@
     },
     {
       "parameters": {
+        "jsonSchemaExample": "{\n  \"industry\": \"SaaS\",\n  \"location\": \"California\",\n  \"target_role\": \"CEO\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        420,
+        160
+      ],
+      "id": "5136b2ef-ef02-480d-9df8-537ec80ad201",
+      "name": "Structured Output Parser - Search Request"
+    },
+    {
+      "parameters": {
         "operation": "append",
         "documentId": {
           "__rl": true,
@@ -188,7 +201,8 @@
       "parameters": {
         "options": {
           "systemMessage": "System:  \nYou are an intelligent data extraction AI trained to support automation workflows. You are a data extraction professional.\n\nUser:  \nYour task is to extract structured information from the following message for use in a research agent.  \nYour task is to output the extracted data in the following JSON format:  \n{\"industry\": \"value\", \"location\": \"value\", \"target_role\": \"value\"}\n\nExample message:  \n\"Find me CEOs of SaaS companies in California\"\n\nAssistant:  \n{\"industry\": \"SaaS\", \"location\": \"California\", \"target_role\": \"CEO\"}\n\n"
-        }
+        },
+        "hasOutputParser": true
       },
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 1.9,
@@ -201,7 +215,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const raw = items[0].json.output;\n\n// Parse the inner stringified JSON\nconst parsed = JSON.parse(raw);\n\nreturn [\n  {\n    json: {\n      industry: parsed.industry,\n      location: parsed.location,\n      target_role: parsed.target_role\n    }\n  }\n];\n"
+        "jsCode": "const raw = items[0].json.output;\nconst parsed = typeof raw === 'string' ? JSON.parse(raw) : raw;\n\nconst industry = String(parsed.industry || '').trim();\nconst location = String(parsed.location || '').trim();\nconst targetRole = String(parsed.target_role || '').trim();\n\nif (!industry || !location || !targetRole) {\n  throw new Error(`Missing search requirements: ${JSON.stringify(parsed)}`);\n}\n\nreturn [\n  {\n    json: {\n      industry,\n      location,\n      target_role: targetRole\n    }\n  }\n];\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -244,7 +258,7 @@
         "promptType": "define",
         "text": "={{ $json.results[0].raw_content }}{{ $json.answer }}",
         "options": {
-          "systemMessage": "=I want you to extract the company names from the 2 texts and return them in this format:\n\nCompany 1: [Company Name]\nCompany 2: [Company Name]\nCompany 3: [Company Name]\n...\nAll the way to Company 20. Make sure you have the NAMES OF THE COMPANIES\n\nHere are the two texts to process:\n{{ $json.answer }}\n{{ $json.results[0].raw_content }}"
+          "systemMessage": "=Extract up to 20 company names from the provided text.\n\nReturn only the company names.\n- One company per line\n- No numbering\n- No bullets\n- No commentary\n- No duplicates\n\nHere are the two texts to process:\n{{ $json.answer }}\n{{ $json.results[0].raw_content }}"
         }
       },
       "type": "@n8n/n8n-nodes-langchain.agent",
@@ -258,7 +272,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// 1) Grab the full text from the incoming item\nconst text = items[0].json.output;\n\n// 2) Split on the actual newline character\nconst lines = text.split('\\n');\n\n// 3) Map each line (\"Company 1: Ace Auto\") to an object like { json: { company: \"Ace Auto\" } }\nconst outputItems = lines.map(line => {\n  const parts = line.split(': ');\n  return {\n    json: {\n      company: parts[1].trim()\n    }\n  };\n});\n\n// 4) Return the array of objects\nreturn outputItems;\n"
+        "jsCode": "const text = String(items[0].json.output || '');\nconst seen = new Set();\nconst companies = text\n  .split('\\n')\n  .map(line => line.replace(/^[-*\\d.\\s]+/, '').trim())\n  .filter(Boolean)\n  .filter(company => {\n    const key = company.toLowerCase();\n    if (seen.has(key)) return false;\n    seen.add(key);\n    return true;\n  })\n  .slice(0, 20);\n\nif (!companies.length) {\n  throw new Error('No companies were extracted from the research results.');\n}\n\nreturn companies.map(company => ({\n  json: {\n    company\n  }\n}));\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -322,7 +336,20 @@
     },
     {
       "parameters": {
-        "jsCode": "// Get the input text from the JSON output of the previous node\nconst text = $input.first().json.output;\n\n// Split the text into lines using the newline character\nconst lines = text.split('\\n');\n\n// Initialize an object to store the results\nconst result = {};\n\n// Loop through each line to extract the key/value pairs\nlines.forEach(line => {\n  // Split the line into key and value; \"shift\" gets rid of the key portion\n  const parts = line.split(':');\n  if (parts.length >= 2) {\n    // Extract the key and join back the remaining parts (in case the value contains colons)\n    const key = parts.shift().trim().toLowerCase();\n    const value = parts.join(':').trim();\n\n    // Map each expected key to a property in the result object\n    if (key === 'name') {\n      result.name = value;\n    } else if (key === 'email') {\n      result.email = value;\n    } else if (key === 'phone number') {\n      result.phoneNumber = value;\n    }\n  }\n});\n\n// Return the result as a new JSON object\nreturn [{ json: result }];\n"
+        "jsonSchemaExample": "{\n  \"name\": \"Jane Doe\",\n  \"email\": \"jane@example.com\",\n  \"phoneNumber\": \"+1 555 555 5555\",\n  \"confidence\": 8\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        2100,
+        340
+      ],
+      "id": "c0bbdc20-4012-4a0e-912b-c393ac330202",
+      "name": "Structured Output Parser - Contact"
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $input.first().json.output;\nconst parsed = typeof raw === 'string' ? JSON.parse(raw) : raw;\n\nconst name = String(parsed.name || '').trim();\nconst email = String(parsed.email || '').trim();\nconst phoneNumber = String(parsed.phoneNumber || '').trim();\nconst confidence = Number(parsed.confidence ?? 0);\nconst emailIsValid = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email);\nconst nameIsValid = !!name && name.toLowerCase() !== 'not found';\nconst valid = nameIsValid && emailIsValid && confidence >= 7;\n\nreturn [{\n  json: {\n    name,\n    email,\n    phoneNumber,\n    confidence,\n    validationStatus: valid ? 'valid' : 'invalid'\n  }\n}];\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -338,8 +365,9 @@
         "promptType": "define",
         "text": "={{ $json.answer }}",
         "options": {
-          "systemMessage": "=You are a smart AI parsing assistant. Your task is to extract a person’s contact information from the raw text provided in the variable `{{ $json.answer }}`. The raw text may contain a name, an email address, and a phone number—possibly mixed in with other words or sentences. \n\n**Instructions:**\n1. Read the entire contents of `{{ $json.answer }}`.\n2. Identify exactly one “Name,” one “Email,” and one “Phone number” within that text.\n3. Output only these three lines, in this exact format (no extra punctuation or commentary):\n\n   name: [Person’s full name]  \n   email: [Person’s email address]  \n   phone number: [Person’s phone number]\n\n4. If any field is missing or cannot be found, output:\n   - `name: Not found` \n   - `email: Not found` \n   - `phone number: Not found`\n   on its respective line.  \n\n**Example:**  \nIf `{{ $json.answer }}` is:  \n"
-        }
+          "systemMessage": "=You are a smart AI parsing assistant. Your task is to extract a person’s contact information from the raw text provided in `{{ $json.answer }}`.\n\nReturn only the structured fields required by the output parser:\n- `name`\n- `email`\n- `phoneNumber`\n- `confidence` as an integer from 1 to 10\n\nRules:\n- If a field is missing, return an empty string for that field.\n- Do not invent private contact data.\n- Use a lower confidence score when the evidence is weak or ambiguous."
+        },
+        "hasOutputParser": true
       },
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 1.9,
@@ -349,6 +377,39 @@
       ],
       "id": "639e2295-e343-48fb-8997-03430f927579",
       "name": "Extract Contact Information"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "14f4bc77-d36c-4b53-b3ad-208146130203",
+              "leftValue": "={{ $json.validationStatus }}",
+              "rightValue": "valid",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2480,
+        120
+      ],
+      "id": "4c2af5b6-d481-4fe5-929d-1ccbaf130204",
+      "name": "Valid Contact?"
     }
   ],
   "pinData": {},
@@ -381,6 +442,17 @@
           {
             "node": "Input Information Agent",
             "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser - Search Request": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Input Information Agent",
+            "type": "ai_outputParser",
             "index": 0
           }
         ]
@@ -497,11 +569,40 @@
         ]
       ]
     },
+    "Structured Output Parser - Contact": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Extract Contact Information",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
     "Ready for Sheet": {
       "main": [
         [
           {
+            "node": "Valid Contact?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Valid Contact?": {
+      "main": [
+        [
+          {
             "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items",
             "type": "main",
             "index": 0
           }
