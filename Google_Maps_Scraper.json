@@ -3,7 +3,7 @@
   "nodes": [
     {
       "parameters": {
-        "url": "https://api.apify.com/v2/acts/lukaskrivka~google-maps-with-contact-details/run-sync-get-dataset-items?token=apify_api_TeHdeDATVqX1B0gMpyHcr53mQrCS692xJWPM",
+        "url": "https://api.apify.com/v2/acts/lukaskrivka~google-maps-with-contact-details/run-sync-get-dataset-items?token={{APIFY_API_TOKEN}}",
         "sendBody": true,
         "specifyBody": "json",
         "jsonBody": "={\n    \"language\": \"en\",\n    \"locationQuery\": \"{{ $json.location }}\",\n    \"maxCrawledPlacesPerSearch\": 5,\n    \"searchStringsArray\": [\n        \"{{ $json.query }}\"\n    ],\n    \"skipClosedPlaces\": false\n}",
