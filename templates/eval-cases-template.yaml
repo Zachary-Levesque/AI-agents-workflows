@@ -1,0 +1,27 @@
+workflow: workflow-name
+owner: your-name
+cases:
+  - id: case-001
+    category: happy-path
+    input: ""
+    expected:
+      status: pass
+      output_contains: []
+      output_equals: {}
+    notes: ""
+  - id: case-002
+    category: edge-case
+    input: ""
+    expected:
+      status: partial
+      output_contains: []
+      output_equals: {}
+    notes: ""
+  - id: case-003
+    category: adversarial
+    input: ""
+    expected:
+      status: fail
+      output_contains: []
+      output_equals: {}
+    notes: ""
