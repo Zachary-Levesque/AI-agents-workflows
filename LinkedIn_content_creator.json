@@ -40,7 +40,7 @@
           "parameters": [
             {
               "name": "Authorization",
-              "value": "Bearer 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"
+              "value": "Bearer {{TAVILY_API_KEY}}"
             }
           ]
         },
@@ -64,7 +64,7 @@
           "__rl": true,
           "value": "1z-zsFiHaImjstiBmUGEDD3O9Cjhe-8TAcvaFlkjnBwc",
           "mode": "list",
-          "cachedResultName": "LinkedIn posts",
+          "cachedResultName": "LinkedIn Content Sheet",
           "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1z-zsFiHaImjstiBmUGEDD3O9Cjhe-8TAcvaFlkjnBwc/edit?usp=drivesdk"
         },
         "sheetName": {
@@ -97,7 +97,7 @@
       "credentials": {
         "googleSheetsOAuth2Api": {
           "id": "9TVzYiW8YotAvG1X",
-          "name": "Google Sheets account"
+          "name": "Google Sheets Credential"
         }
       }
     },
@@ -138,7 +138,7 @@
       "credentials": {
         "openAiApi": {
           "id": "p8UCjIalbKhZg8ql",
-          "name": "OpenAi account 2"
+          "name": "OpenAI Credential"
         }
       }
     },
@@ -149,7 +149,7 @@
           "__rl": true,
           "value": "1z-zsFiHaImjstiBmUGEDD3O9Cjhe-8TAcvaFlkjnBwc",
           "mode": "list",
-          "cachedResultName": "LinkedIn posts",
+          "cachedResultName": "LinkedIn Content Sheet",
           "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1z-zsFiHaImjstiBmUGEDD3O9Cjhe-8TAcvaFlkjnBwc/edit?usp=drivesdk"
         },
         "sheetName": {
@@ -226,7 +226,7 @@
       "credentials": {
         "googleSheetsOAuth2Api": {
           "id": "9TVzYiW8YotAvG1X",
-          "name": "Google Sheets account"
+          "name": "Google Sheets Credential"
         }
       }
     }
