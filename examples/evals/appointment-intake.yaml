@@ -1,0 +1,31 @@
+workflow: appointment-intake-and-scheduling-agent
+owner: zachary-levesque
+cases:
+  - id: booking-001
+    category: happy-path
+    input: "Hi, this is Jane Doe. Can I book a car wash for my Toyota Corolla on 2026-05-10 at 09:00? You can reach me at jane@example.com."
+    expected:
+      status: pass
+      output_contains:
+        - Jane Doe
+        - jane@example.com
+        - car wash
+      output_equals: {}
+    notes: "Should parse a complete booking cleanly."
+  - id: booking-002
+    category: edge-case
+    input: "Need detailing next Friday morning for my SUV."
+    expected:
+      status: partial
+      output_contains:
+        - detailing
+      output_equals: {}
+    notes: "Date is ambiguous and should be routed carefully."
+  - id: booking-003
+    category: adversarial
+    input: "Your car wash pricing page is broken."
+    expected:
+      status: fail
+      output_contains: []
+      output_equals: {}
+    notes: "Should not schedule anything from a non-booking message."

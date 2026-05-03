@@ -1,0 +1,21 @@
+workflow: document-rag-support-assistant
+owner: zachary-levesque
+cases:
+  - id: rag-001
+    category: happy-path
+    input: "What programs do you offer for children ages 8 to 12?"
+    expected:
+      status: pass
+      output_contains:
+        - "Sources:"
+      output_equals: {}
+    notes: "Should answer from retrieved content and cite sources."
+  - id: rag-002
+    category: missing-context
+    input: "What are your prices?"
+    expected:
+      status: partial
+      output_contains:
+        - "I don’t see that in the provided data."
+      output_equals: {}
+    notes: "Should avoid fabrication if pricing is absent."
