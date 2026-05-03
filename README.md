@@ -103,6 +103,18 @@ If your goal is to gain real skill and produce stronger portfolio work, improve 
 4. `New_Lead_Research.json`
    Useful business workflow, but it currently trusts search output too much.
 
+## Flagship agents
+
+The strongest portfolio pieces in this repo are now:
+
+- `Appointment Intake and Scheduling Agent`
+- `Document RAG Support Assistant`
+- `Lead Research Assistant`
+- `New Lead Research Briefing Agent`
+- `LinkedIn Content Research and Drafting Agent`
+
+Each has supporting architecture or spec material in `docs/` or `specs/`, and the lead-research workflows now use stronger structured parsing and review gating than the initial exports.
+
 ## Security note
 
 The workflow exports in this repo were redacted so the repository is safer to share. Before importing and running them, you should reconnect your own credentials and replace placeholder resource IDs.
