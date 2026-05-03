@@ -1,5 +1,5 @@
 {
-  "name": "Practice - Weather Agent",
+  "name": "Daily Weather Alert Agent",
   "nodes": [
     {
       "parameters": {},
