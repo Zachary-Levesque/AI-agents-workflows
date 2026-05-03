@@ -23,7 +23,7 @@
       "credentials": {
         "gmailOAuth2": {
           "id": "gTQAMJ38Zij2IBn9",
-          "name": "Gmail account"
+          "name": "Gmail Credential"
         }
       }
     },
@@ -116,7 +116,7 @@
       "credentials": {
         "openAiApi": {
           "id": "p8UCjIalbKhZg8ql",
-          "name": "OpenAi account 2"
+          "name": "OpenAI Credential"
         }
       }
     },
@@ -136,7 +136,7 @@
     },
     {
       "parameters": {
-        "jsonSchemaExample": "{\n\t\"name\": \"Zachary Levesque\",\n\t\"email\": \"zlevesque93@gmail.com\",\n    \"service\": \" car wash\",\n    \"date\": \"June 18th, 2005\",\n    \"vehicle Type\": \"Toyota Corolla\"\n}"
+        "jsonSchemaExample": "{\n\t\"name\": \"Zachary Levesque\",\n\t\"email\": \"{{YOUR_EMAIL}}\",\n    \"service\": \" car wash\",\n    \"date\": \"June 18th, 2005\",\n    \"vehicle Type\": \"Toyota Corolla\"\n}"
       },
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.2,
@@ -150,7 +150,7 @@
     {
       "parameters": {
         "promptType": "define",
-        "text": "=# You are an AI assistant helping to extract booking information from customer emails.\n\nHere is the email content you will receive:  \n{{ $json.snippet }}\n\nExtract and return the following information from the email and the \"From\" field ({{ $json.From }}):\n\n- Full name of the customer: Extract the full name in the email content.\n- Email address: Extract the email address from the \"From\" field. For example: zlevesque93@gmail.com.\n- Type of service requested: Based on the email content, identify the service the customer wants (e.g., car wash, detailing, oil change).\n- Requested date and time: If mentioned, extract and format it as YYYY-MM-DDTHH:mm:ss (e.g., 2025-06-18T08:08:00).\n- Vehicle type: Extract the type of vehicle mentioned in the email.\n\nPlease output your answers exactly in this format (no extra text):\n\n- name\n- email\n- service\n- date\n- vehicle Type\n",
+        "text": "=# You are an AI assistant helping to extract booking information from customer emails.\n\nHere is the email content you will receive:  \n{{ $json.snippet }}\n\nExtract and return the following information from the email and the \"From\" field ({{ $json.From }}):\n\n- Full name of the customer: Extract the full name in the email content.\n- Email address: Extract the email address from the \"From\" field. For example: {{YOUR_EMAIL}}.\n- Type of service requested: Based on the email content, identify the service the customer wants (e.g., car wash, detailing, oil change).\n- Requested date and time: If mentioned, extract and format it as YYYY-MM-DDTHH:mm:ss (e.g., 2025-06-18T08:08:00).\n- Vehicle type: Extract the type of vehicle mentioned in the email.\n\nPlease output your answers exactly in this format (no extra text):\n\n- name\n- email\n- service\n- date\n- vehicle Type\n",
         "hasOutputParser": true,
         "options": {}
       },
@@ -180,9 +180,9 @@
       "parameters": {
         "calendar": {
           "__rl": true,
-          "value": "zlevesque93@gmail.com",
+          "value": "{{YOUR_EMAIL}}",
           "mode": "list",
-          "cachedResultName": "zlevesque93@gmail.com"
+          "cachedResultName": "{{YOUR_EMAIL}}"
         },
         "start": "={{ $json.date }}",
         "end": "={{ $json.endDate }}",
@@ -201,7 +201,7 @@
       "credentials": {
         "googleCalendarOAuth2Api": {
           "id": "vUtiGLCj0Cvv3suH",
-          "name": "Google Calendar account"
+          "name": "Google Calendar Credential"
         }
       }
     },
@@ -212,7 +212,7 @@
           "__rl": true,
           "value": "1bh3KS5nnCcdmTSkwiNTdRnKXy8_Bgu4TtgvLZP6Pn7c",
           "mode": "list",
-          "cachedResultName": "n8n practice",
+          "cachedResultName": "Demo Operations Sheet",
           "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1bh3KS5nnCcdmTSkwiNTdRnKXy8_Bgu4TtgvLZP6Pn7c/edit?usp=drivesdk"
         },
         "sheetName": {
@@ -331,7 +331,7 @@
       "credentials": {
         "googleSheetsOAuth2Api": {
           "id": "9TVzYiW8YotAvG1X",
-          "name": "Google Sheets account"
+          "name": "Google Sheets Credential"
         }
       }
     }
