@@ -35,7 +35,7 @@
       "credentials": {
         "openAiApi": {
           "id": "p8UCjIalbKhZg8ql",
-          "name": "OpenAi account 2"
+          "name": "OpenAI Credential"
         }
       }
     },
@@ -57,7 +57,7 @@
           "__rl": true,
           "value": "1bh3KS5nnCcdmTSkwiNTdRnKXy8_Bgu4TtgvLZP6Pn7c",
           "mode": "list",
-          "cachedResultName": "n8n practice",
+          "cachedResultName": "Demo Operations Sheet",
           "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1bh3KS5nnCcdmTSkwiNTdRnKXy8_Bgu4TtgvLZP6Pn7c/edit?usp=drivesdk"
         },
         "sheetName": {
@@ -141,7 +141,7 @@
       "credentials": {
         "googleSheetsOAuth2Api": {
           "id": "9TVzYiW8YotAvG1X",
-          "name": "Google Sheets account"
+          "name": "Google Sheets Credential"
         }
       }
     },
@@ -180,7 +180,7 @@
       "credentials": {
         "openAiApi": {
           "id": "p8UCjIalbKhZg8ql",
-          "name": "OpenAi account 2"
+          "name": "OpenAI Credential"
         }
       }
     },
@@ -221,7 +221,7 @@
           "parameters": [
             {
               "name": "Authorization",
-              "value": "Bearer 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"
+              "value": "Bearer {{TAVILY_API_KEY}}"
             }
           ]
         },
@@ -278,7 +278,7 @@
           "parameters": [
             {
               "name": "Authorization",
-              "value": "Bearer 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"
+              "value": "Bearer {{TAVILY_API_KEY}}"
             }
           ]
         },
@@ -316,7 +316,7 @@
       "credentials": {
         "openAiApi": {
           "id": "p8UCjIalbKhZg8ql",
-          "name": "OpenAi account 2"
+          "name": "OpenAI Credential"
         }
       }
     },
