@@ -13,10 +13,10 @@
         "triggerOn": "specificFolder",
         "folderToWatch": {
           "__rl": true,
-          "value": "1iMFf2q8RR7zjuM9ZNgQozhhhQt10ph7u",
+          "value": "{{RESOURCE_ID}}",
           "mode": "list",
           "cachedResultName": "RoboSprout",
-          "cachedResultUrl": "https://drive.google.com/drive/folders/1iMFf2q8RR7zjuM9ZNgQozhhhQt10ph7u"
+          "cachedResultUrl": "https://drive.google.com/drive/folders/{{DRIVE_FOLDER_ID}}"
         },
         "event": "fileCreated",
         "options": {}
