@@ -55,6 +55,8 @@ Read these in order:
 2. [docs/agent-design-playbook.md](/Users/zacharylevesque/Documents/GitHub/AI-agents-workflows/docs/agent-design-playbook.md)
 3. [docs/workflow-audit.md](/Users/zacharylevesque/Documents/GitHub/AI-agents-workflows/docs/workflow-audit.md)
 4. [docs/evaluation-framework.md](/Users/zacharylevesque/Documents/GitHub/AI-agents-workflows/docs/evaluation-framework.md)
+5. [docs/portfolio-overview.md](/Users/zacharylevesque/Documents/GitHub/AI-agents-workflows/docs/portfolio-overview.md)
+6. [docs/skills-matrix.md](/Users/zacharylevesque/Documents/GitHub/AI-agents-workflows/docs/skills-matrix.md)
 
 Then use:
 
@@ -114,3 +116,20 @@ python3 tools/audit_workflows.py
 ```
 
 This prints a compact inventory of the exported workflows and flags common risks such as hard-coded secrets, manual-only triggers, or missing chat triggers.
+
+You can also run:
+
+```bash
+make audit
+make test
+```
+
+## Engineering signals
+
+This repo includes the kinds of artifacts strong engineering teams expect:
+
+- automated workflow auditing
+- unit tests for local tooling
+- CI via GitHub Actions
+- security checks for shareable exports
+- evaluation templates and architecture documentation
