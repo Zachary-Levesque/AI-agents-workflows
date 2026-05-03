@@ -1,5 +1,5 @@
 {
-  "name": "Practice - RAG Pipeline & Chatbot",
+  "name": "Document RAG Support Assistant",
   "nodes": [
     {
       "parameters": {
