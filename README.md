@@ -1,27 +1,116 @@
-# AI Agents and Workflows
+# AI Agents Workflows Lab
 
-This repository has many different AI agents and Workflows to automate various tasks
+This repository is now structured as an `n8n`-based AI agent lab instead of a loose collection of workflow exports.
 
-## 1: Finish Appointments: 
-Notify customers by email when their service is completed.
+It serves 3 purposes:
 
-## 2: Get Appointment and Schedule: 
-Extract appointment information from customer emails and automatically schedules it.
+1. Portfolio: show practical agent workflows you have built.
+2. Training system: give you a repeatable way to design, test, and improve agents.
+3. Upgrade path: turn simple automations into reliable, production-ready agents.
 
-## 3: Google Maps Scraper: 
-Scrapes Google Maps for business contact details based on a search query and location.
+## What is in this repo
 
-## 4: LinkedIn content creator: 
-Automatically creates professional LinkedIn posts daily based on trending web content.
+- `*.json`: exported `n8n` workflows.
+- `docs/`: playbooks, audits, and learning material.
+- `templates/`: reusable specs, eval cases, and workflow docs.
+- `tools/`: small local utilities to inspect workflow quality.
 
-## 5: New Lead Research: 
-Researches a new lead, summarizes web findings with AI, and emails the result to your team.
+## Current workflows
 
-## 6: RAG Pipeline Chatbot: 
-A chatbot that answers questions using a database.
+1. `Finish_Appointments.json`
+   Sends completion emails after a service is marked finished.
+2. `Get_Appointment_and_Schedule.json`
+   Extracts booking details from inbound email and creates a calendar event.
+3. `Google_Maps_Scraper.json`
+   Collects business details from Google Maps search results.
+4. `LinkedIn_content_creator.json`
+   Pulls web research and drafts LinkedIn content.
+5. `New_Lead_Research.json`
+   Researches a lead and emails a summary.
+6. `RAG_Pipeline___Chatbot.json`
+   Ingests documents into Pinecone and answers questions from retrieved context.
+7. `Research_assistant.json`
+   Searches for companies and contact information for outbound lead generation.
+8. `Weather_Agent.json`
+   Fetches weather data and sends a daily report.
 
-## 7: Research assistant: 
-Does research on anyone in a respective field for new leads. Gets the the contact information to contact.
+## What was missing before
 
-## 8: Weather Agent: 
-Fetches daily weather data, summarizes key info, and emails a weather report every morning.
+The original repo had useful workflow ideas, but it was not yet a complete project for learning how to build successful AI agents. The main gaps were:
+
+- no evaluation framework
+- no build standard for new agents
+- no portfolio-quality documentation
+- no security redaction for shareable exports
+- no workflow audit showing what is weak and how to improve it
+- no roadmap from beginner automations to stronger agent systems
+
+Those gaps are now addressed in this repository structure.
+
+## Start here
+
+Read these in order:
+
+1. [docs/learning-roadmap.md](/Users/zacharylevesque/Documents/GitHub/AI-agents-workflows/docs/learning-roadmap.md)
+2. [docs/agent-design-playbook.md](/Users/zacharylevesque/Documents/GitHub/AI-agents-workflows/docs/agent-design-playbook.md)
+3. [docs/workflow-audit.md](/Users/zacharylevesque/Documents/GitHub/AI-agents-workflows/docs/workflow-audit.md)
+4. [docs/evaluation-framework.md](/Users/zacharylevesque/Documents/GitHub/AI-agents-workflows/docs/evaluation-framework.md)
+
+Then use:
+
+- [templates/agent-spec-template.md](/Users/zacharylevesque/Documents/GitHub/AI-agents-workflows/templates/agent-spec-template.md)
+- [templates/eval-cases-template.yaml](/Users/zacharylevesque/Documents/GitHub/AI-agents-workflows/templates/eval-cases-template.yaml)
+- [templates/workflow-readme-template.md](/Users/zacharylevesque/Documents/GitHub/AI-agents-workflows/templates/workflow-readme-template.md)
+
+## How to improve any workflow in this repo
+
+Use the same cycle every time:
+
+1. Define the task precisely.
+2. Define the required inputs, outputs, tools, and failure modes.
+3. Add deterministic guardrails before and after the model step.
+4. Create eval cases for normal, edge, and adversarial inputs.
+5. Run the workflow against the eval set.
+6. Record failures and fix the workflow, prompt, or control logic.
+7. Repeat until the workflow is reliable enough for the intended use.
+
+## Standard for a strong agent project
+
+A workflow in this repo should eventually have:
+
+- a clear problem statement
+- explicit trigger, input, output, and ownership
+- documented dependencies and credentials
+- a prompt that is narrow and testable
+- validation and error handling
+- a human approval step for high-risk actions
+- eval cases with expected outputs
+- notes on observed failure modes
+- a short README explaining how to run it
+
+## Highest-priority upgrades
+
+If your goal is to gain real skill and produce stronger portfolio work, improve these first:
+
+1. `Get_Appointment_and_Schedule.json`
+   Good example of extraction plus action, but it has brittle parsing and a hard-coded date bug.
+2. `RAG_Pipeline___Chatbot.json`
+   Best base for learning retrieval, grounding, and answer evaluation.
+3. `Research_assistant.json`
+   High upside, but it needs validation, deduplication, and confidence checks.
+4. `New_Lead_Research.json`
+   Useful business workflow, but it currently trusts search output too much.
+
+## Security note
+
+The workflow exports in this repo were redacted so the repository is safer to share. Before importing and running them, you should reconnect your own credentials and replace placeholder resource IDs.
+
+## Local tooling
+
+Run the workflow audit helper:
+
+```bash
+python3 tools/audit_workflows.py
+```
+
+This prints a compact inventory of the exported workflows and flags common risks such as hard-coded secrets, manual-only triggers, or missing chat triggers.
