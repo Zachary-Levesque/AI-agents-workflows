@@ -39,17 +39,17 @@
         },
         "documentId": {
           "__rl": true,
-          "value": "1bh3KS5nnCcdmTSkwiNTdRnKXy8_Bgu4TtgvLZP6Pn7c",
+          "value": "{{RESOURCE_ID}}",
           "mode": "list",
           "cachedResultName": "Demo Operations Sheet",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1bh3KS5nnCcdmTSkwiNTdRnKXy8_Bgu4TtgvLZP6Pn7c/edit?usp=drivesdk"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/{{SPREADSHEET_ID}}/edit"
         },
         "sheetName": {
           "__rl": true,
-          "value": 441539324,
+          "value": "{{SHEET_GID}}",
           "mode": "list",
           "cachedResultName": "Lead Research",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1bh3KS5nnCcdmTSkwiNTdRnKXy8_Bgu4TtgvLZP6Pn7c/edit#gid=441539324"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/{{SPREADSHEET_ID}}/edit#gid={{SHEET_GID}}"
         },
         "event": "rowUpdate",
         "options": {
@@ -132,17 +132,17 @@
         "operation": "update",
         "documentId": {
           "__rl": true,
-          "value": "1bh3KS5nnCcdmTSkwiNTdRnKXy8_Bgu4TtgvLZP6Pn7c",
+          "value": "{{RESOURCE_ID}}",
           "mode": "list",
           "cachedResultName": "Demo Operations Sheet",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1bh3KS5nnCcdmTSkwiNTdRnKXy8_Bgu4TtgvLZP6Pn7c/edit?usp=drivesdk"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/{{SPREADSHEET_ID}}/edit"
         },
         "sheetName": {
           "__rl": true,
-          "value": 441539324,
+          "value": "{{SHEET_GID}}",
           "mode": "list",
           "cachedResultName": "Lead Research",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1bh3KS5nnCcdmTSkwiNTdRnKXy8_Bgu4TtgvLZP6Pn7c/edit#gid=441539324"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/{{SPREADSHEET_ID}}/edit#gid={{SHEET_GID}}"
         },
         "columns": {
           "mappingMode": "defineBelow",
