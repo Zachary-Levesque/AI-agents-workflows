@@ -10,7 +10,7 @@
           "parameters": [
             {
               "name": "Authorization",
-              "value": "Bearer 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"
+              "value": "Bearer {{TAVILY_API_KEY}}"
             }
           ]
         },
@@ -41,7 +41,7 @@
           "__rl": true,
           "value": "1bh3KS5nnCcdmTSkwiNTdRnKXy8_Bgu4TtgvLZP6Pn7c",
           "mode": "list",
-          "cachedResultName": "n8n practice",
+          "cachedResultName": "Demo Operations Sheet",
           "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1bh3KS5nnCcdmTSkwiNTdRnKXy8_Bgu4TtgvLZP6Pn7c/edit?usp=drivesdk"
         },
         "sheetName": {
@@ -69,7 +69,7 @@
       "credentials": {
         "googleSheetsTriggerOAuth2Api": {
           "id": "sZ4uAHaQF3uI5Mp2",
-          "name": "Google Sheets Trigger account"
+          "name": "Google Sheets Trigger Credential"
         }
       }
     },
@@ -110,7 +110,7 @@
       "credentials": {
         "openAiApi": {
           "id": "p8UCjIalbKhZg8ql",
-          "name": "OpenAi account 2"
+          "name": "OpenAI Credential"
         }
       }
     },
@@ -134,7 +134,7 @@
           "__rl": true,
           "value": "1bh3KS5nnCcdmTSkwiNTdRnKXy8_Bgu4TtgvLZP6Pn7c",
           "mode": "list",
-          "cachedResultName": "n8n practice",
+          "cachedResultName": "Demo Operations Sheet",
           "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1bh3KS5nnCcdmTSkwiNTdRnKXy8_Bgu4TtgvLZP6Pn7c/edit?usp=drivesdk"
         },
         "sheetName": {
@@ -201,7 +201,7 @@
       "credentials": {
         "googleSheetsOAuth2Api": {
           "id": "9TVzYiW8YotAvG1X",
-          "name": "Google Sheets account"
+          "name": "Google Sheets Credential"
         }
       }
     },
@@ -240,7 +240,7 @@
     },
     {
       "parameters": {
-        "sendTo": "zlevesque93@gmail.com",
+        "sendTo": "{{YOUR_EMAIL}}",
         "subject": "={{ $json.Subject }}",
         "emailType": "text",
         "message": "=Hi Team, here is some information about our possible client, {{ $('Google Sheets Trigger').item.json.Name }}\n\n{{ $json.Body }}\n\nBest,\nMike",
@@ -258,7 +258,7 @@
       "credentials": {
         "gmailOAuth2": {
           "id": "gTQAMJ38Zij2IBn9",
-          "name": "Gmail account"
+          "name": "Gmail Credential"
         }
       }
     }
