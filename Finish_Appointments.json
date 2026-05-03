@@ -12,17 +12,17 @@
         },
         "documentId": {
           "__rl": true,
-          "value": "1bh3KS5nnCcdmTSkwiNTdRnKXy8_Bgu4TtgvLZP6Pn7c",
+          "value": "{{RESOURCE_ID}}",
           "mode": "list",
           "cachedResultName": "Demo Operations Sheet",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1bh3KS5nnCcdmTSkwiNTdRnKXy8_Bgu4TtgvLZP6Pn7c/edit?usp=drivesdk"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/{{SPREADSHEET_ID}}/edit"
         },
         "sheetName": {
           "__rl": true,
-          "value": "gid=0",
+          "value": "gid={{SHEET_GID}}",
           "mode": "list",
           "cachedResultName": "Post service customer feedback",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1bh3KS5nnCcdmTSkwiNTdRnKXy8_Bgu4TtgvLZP6Pn7c/edit#gid=0"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/{{SPREADSHEET_ID}}/edit#gid={{SHEET_GID}}"
         },
         "event": "rowUpdate",
         "options": {
