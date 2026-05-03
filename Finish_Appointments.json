@@ -14,7 +14,7 @@
           "__rl": true,
           "value": "1bh3KS5nnCcdmTSkwiNTdRnKXy8_Bgu4TtgvLZP6Pn7c",
           "mode": "list",
-          "cachedResultName": "n8n practice",
+          "cachedResultName": "Demo Operations Sheet",
           "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1bh3KS5nnCcdmTSkwiNTdRnKXy8_Bgu4TtgvLZP6Pn7c/edit?usp=drivesdk"
         },
         "sheetName": {
@@ -42,7 +42,7 @@
       "credentials": {
         "googleSheetsTriggerOAuth2Api": {
           "id": "sZ4uAHaQF3uI5Mp2",
-          "name": "Google Sheets Trigger account"
+          "name": "Google Sheets Trigger Credential"
         }
       }
     },
@@ -112,7 +112,7 @@
       "credentials": {
         "gmailOAuth2": {
           "id": "gTQAMJ38Zij2IBn9",
-          "name": "Gmail account"
+          "name": "Gmail Credential"
         }
       }
     }
