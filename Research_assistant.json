@@ -55,17 +55,17 @@
         "operation": "append",
         "documentId": {
           "__rl": true,
-          "value": "1bh3KS5nnCcdmTSkwiNTdRnKXy8_Bgu4TtgvLZP6Pn7c",
+          "value": "{{RESOURCE_ID}}",
           "mode": "list",
           "cachedResultName": "Demo Operations Sheet",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1bh3KS5nnCcdmTSkwiNTdRnKXy8_Bgu4TtgvLZP6Pn7c/edit?usp=drivesdk"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/{{SPREADSHEET_ID}}/edit"
         },
         "sheetName": {
           "__rl": true,
-          "value": 291443849,
+          "value": "{{SHEET_GID}}",
           "mode": "list",
           "cachedResultName": "Lead Generation",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1bh3KS5nnCcdmTSkwiNTdRnKXy8_Bgu4TtgvLZP6Pn7c/edit#gid=291443849"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/{{SPREADSHEET_ID}}/edit#gid={{SHEET_GID}}"
         },
         "columns": {
           "mappingMode": "defineBelow",
