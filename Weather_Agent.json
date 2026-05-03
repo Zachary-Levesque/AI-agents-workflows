@@ -60,7 +60,7 @@
     },
     {
       "parameters": {
-        "sendTo": "zlevesque93@gmail.com",
+        "sendTo": "{{YOUR_EMAIL}}",
         "subject": "Weather Warning for the day",
         "emailType": "text",
         "message": "=Predictions for today's weather:\n\n- 🌡️ Min Temp: {{ $json.minTemperature }}°C  \n- 🔥 Max Temp: {{ $json.maxTemperature }}°C  \n- 🌧️ Peak Chance of Showers: {{ $json.peakPrecipitationProbability }}% at {{ $json.peakPrecipitationTime }}\n\nHave a great day! 🌞\n",
@@ -80,7 +80,7 @@
       "credentials": {
         "gmailOAuth2": {
           "id": "gTQAMJ38Zij2IBn9",
-          "name": "Gmail account"
+          "name": "Gmail Credential"
         }
       }
     }
