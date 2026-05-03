@@ -136,7 +136,7 @@
     },
     {
       "parameters": {
-        "jsonSchemaExample": "{\n\t\"name\": \"Zachary Levesque\",\n\t\"email\": \"{{YOUR_EMAIL}}\",\n    \"service\": \" car wash\",\n    \"date\": \"June 18th, 2005\",\n    \"vehicle Type\": \"Toyota Corolla\"\n}"
+        "jsonSchemaExample": "{\n\t\"name\": \"Jane Doe\",\n\t\"email\": \"customer@example.com\",\n    \"service\": \"car wash\",\n    \"date\": \"2025-06-18T08:08:00\",\n    \"vehicle Type\": \"Toyota Corolla\"\n}"
       },
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.2,
@@ -150,7 +150,7 @@
     {
       "parameters": {
         "promptType": "define",
-        "text": "=# You are an AI assistant helping to extract booking information from customer emails.\n\nHere is the email content you will receive:  \n{{ $json.snippet }}\n\nExtract and return the following information from the email and the \"From\" field ({{ $json.From }}):\n\n- Full name of the customer: Extract the full name in the email content.\n- Email address: Extract the email address from the \"From\" field. For example: {{YOUR_EMAIL}}.\n- Type of service requested: Based on the email content, identify the service the customer wants (e.g., car wash, detailing, oil change).\n- Requested date and time: If mentioned, extract and format it as YYYY-MM-DDTHH:mm:ss (e.g., 2025-06-18T08:08:00).\n- Vehicle type: Extract the type of vehicle mentioned in the email.\n\nPlease output your answers exactly in this format (no extra text):\n\n- name\n- email\n- service\n- date\n- vehicle Type\n",
+        "text": "=# You are an AI assistant helping to extract booking information from customer emails.\n\nHere is the email content you will receive:  \n{{ $json.snippet }}\n\nExtract and return the following information from the email and the \"From\" field ({{ $json.From }}):\n\n- Full name of the customer: Extract the full name in the email content.\n- Email address: Extract the email address from the \"From\" field.\n- Type of service requested: Based on the email content, identify the service the customer wants (e.g., car wash, detailing, oil change).\n- Requested date and time: If mentioned, extract and format it as YYYY-MM-DDTHH:mm:ss (example: 2025-06-18T08:08:00). If the date or time is unclear, return an empty string.\n- Vehicle type: Extract the type of vehicle mentioned in the email. If not stated, return an empty string.\n\nOnly return the structured fields requested by the output parser. Do not add commentary or extra text.\n",
         "hasOutputParser": true,
         "options": {}
       },
@@ -165,7 +165,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const name = $input.first().json.output.name;\nconst email = $input.first().json.output.email;\nconst service = $input.first().json.output.service;\nconst date = \"2025-06-18T08:00:00\";\nconst vehicleType = $input.first().json.output['vehicle Type'];\n\nconst start = new Date($input.first().json.output.date);\nconst end = new Date(start.getTime() + 60 * 60 * 1000);\n\nconst pad = n => String(n).padStart(2, '0');\nconst formatLocal = (d) => {\n  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;\n};\n\nreturn [\n  {\n    json: {\n      name: name,\n      email: email,\n      service: service,\n      date: formatLocal(start),\n      endDate: formatLocal(end),\n      vehicleType: vehicleType,\n    }\n  }\n];\n"
+        "jsCode": "const output = $input.first().json.output;\nconst name = output.name;\nconst email = output.email;\nconst service = output.service;\nconst vehicleType = output['vehicle Type'];\nconst extractedDate = output.date;\n\nconst start = new Date(extractedDate);\nif (!extractedDate || Number.isNaN(start.getTime())) {\n  throw new Error(`Invalid appointment date extracted: ${extractedDate || 'empty value'}`);\n}\n\nconst end = new Date(start.getTime() + 60 * 60 * 1000);\n\nconst pad = n => String(n).padStart(2, '0');\nconst formatLocal = (d) => {\n  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;\n};\n\nreturn [\n  {\n    json: {\n      name,\n      email,\n      service,\n      date: formatLocal(start),\n      endDate: formatLocal(end),\n      vehicleType,\n    }\n  }\n];\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
