@@ -77,8 +77,9 @@
       "parameters": {
         "promptType": "define",
         "text": "=Lead summary: {{ $json.answer }}\n\nSupporting articles:\n{{ ($json.results || []).slice(0, 3).map((result, index) => `Article ${index + 1}: ${(result.content || result.title || 'No content returned')}`).join('\\n\\n') }}\n",
+        "hasOutputParser": true,
         "options": {
-          "systemMessage": "You are an expert email writer tasked with briefing our lead team on a target company using the provided search summary and supporting articles. Your goal is to distill the essential information into a single, concise paragraph that informs and sparks interest.\n\nAnalyze the material and identify the company’s core business, recent developments or milestones, and any notable challenges or opportunities. If the supporting material is thin, make that clear rather than inventing details.\n\nWrite a professional email with:\n\nSubject: A one-line, attention-grabbing summary of the company.\n\nBody: A single paragraph that:\n\nIntroduces the company briefly.\n\nSummarizes only the most critical insights from the available material.\n\nUses an informative, engaging tone suited to a sales or lead-generation audience.\n\nDoes not exceed one paragraph in length.\n\nAvoid fluff or unnecessary detail. Be precise, clear, and focused on what the lead team needs to know."
+          "systemMessage": "You are an expert email writer tasked with briefing our lead team on a target company using the provided search summary and supporting articles. Your goal is to distill the essential information into a single, concise paragraph that informs and sparks interest.\n\nAnalyze the material and identify the company’s core business, recent developments or milestones, and any notable challenges or opportunities. If the supporting material is thin, make that clear rather than inventing details.\n\nReturn only the structured fields required by the output parser:\n- `subject`: a one-line, attention-grabbing summary of the company\n- `body`: one paragraph introducing the company and summarizing only the most critical insights from the available material\n- `confidence`: integer from 1 to 10 reflecting source strength and confidence in the summary\n- `needsReview`: `true` if the supporting material is thin, ambiguous, or weak enough that a human should review before sending; otherwise `false`\n- `sources`: short semicolon-separated list of the source titles or source descriptions you relied on\n\nUse an informative, engaging tone suited to a sales or lead-generation audience. Avoid fluff or unnecessary detail. Be precise, clear, and focused on what the lead team needs to know."
         }
       },
       "type": "@n8n/n8n-nodes-langchain.agent",
@@ -116,7 +117,20 @@
     },
     {
       "parameters": {
-        "jsCode": "// Grab the combined “Subject: …\\n\\nBody: …” string from the ‘output’ field\nconst fullText = $input.first().json.output;\n\n// Split into subject and body parts at the first occurrence of “Body:”\nconst parts = fullText.split(/\\n\\s*Body:\\s*/i);\n\n// Extract and clean up the subject (remove the “Subject:” prefix)\nconst Subject = parts[0].replace(/^Subject:\\s*/i, '').trim();\n\n// Everything after “Body:” is the body text\nconst Body = (parts[1] || '').trim();\n\nreturn [\n  {\n    json: {\n      Subject,\n      Body\n    }\n  }\n];\n"
+        "jsonSchemaExample": "{\n  \"subject\": \"Why Acme is worth watching\",\n  \"body\": \"Acme is a fast-growing company in the industrial robotics market with recent partnerships and expansion activity that make it relevant for outbound outreach.\",\n  \"confidence\": 8,\n  \"needsReview\": false,\n  \"sources\": \"Company site; recent funding article; product launch coverage\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        1160,
+        160
+      ],
+      "id": "90199153-280d-4f1c-9fde-0a2f8b899001",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "jsCode": "const output = $input.first().json.output;\nif (!output || typeof output !== 'object') {\n  throw new Error('Expected structured output from briefing agent.');\n}\n\nconst Subject = String(output.subject || '').trim();\nconst Body = String(output.body || '').trim();\nconst sources = String(output.sources || '').trim();\nconst confidence = Number(output.confidence ?? 0);\nconst reviewFlag = Boolean(output.needsReview);\nconst needsReview = reviewFlag || !Subject || !Body || confidence < 7 || Body.length < 120;\n\nreturn [\n  {\n    json: {\n      Subject,\n      Body,\n      sources,\n      confidence,\n      needsReview,\n      reviewStatus: needsReview ? 'needs_review' : 'ready'\n    }\n  }\n];\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -236,14 +250,14 @@
         -20
       ],
       "id": "68fe6694-5c76-4d8a-80d7-aa9e5e5fb1e9",
-      "name": "If"
+      "name": "Research Needed?"
     },
     {
       "parameters": {
         "sendTo": "{{YOUR_EMAIL}}",
         "subject": "={{ $json.Subject }}",
         "emailType": "text",
-        "message": "=Hi Team, here is some information about our possible client, {{ $('Google Sheets Trigger').item.json.Name }}\n\n{{ $json.Body }}\n\nBest,\nMike",
+        "message": "=Hi Team, here is some information about our possible client, {{ $('Google Sheets Trigger').item.json.Name }}\n\n{{ $json.Body }}\n\nConfidence: {{ $json.confidence }}/10\nSources: {{ $json.sources }}\n\nBest,\nMike",
         "options": {}
       },
       "type": "n8n-nodes-base.gmail",
@@ -259,6 +273,117 @@
         "gmailOAuth2": {
           "id": "gTQAMJ38Zij2IBn9",
           "name": "Gmail Credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "3f7e31d1-c574-4d89-9ea7-b0f8bc990201",
+              "leftValue": "={{ $json.reviewStatus }}",
+              "rightValue": "ready",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1480,
+        -20
+      ],
+      "id": "7b8f6c40-84b1-4caf-b0c1-fd8787090202",
+      "name": "Ready To Send?"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "{{RESOURCE_ID}}",
+          "mode": "list",
+          "cachedResultName": "Demo Operations Sheet",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/{{SPREADSHEET_ID}}/edit"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "{{SHEET_GID}}",
+          "mode": "list",
+          "cachedResultName": "Lead Research",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/{{SPREADSHEET_ID}}/edit#gid={{SHEET_GID}}"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $('Google Sheets Trigger').item.json.Name }}",
+            "Research done?": "Needs review"
+          },
+          "matchingColumns": [
+            "Name"
+          ],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Research done?",
+              "displayName": "Research done?",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        1720,
+        -160
+      ],
+      "id": "4f589eb1-4e89-450b-9f22-b0054c300203",
+      "name": "Mark Needs Review",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "9TVzYiW8YotAvG1X",
+          "name": "Google Sheets Credential"
         }
       }
     }
@@ -298,6 +423,17 @@
         ]
       ]
     },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
     "AI Agent": {
       "main": [
         [
@@ -313,6 +449,17 @@
       "main": [
         [
           {
+            "node": "Ready To Send?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ready To Send?": {
+      "main": [
+        [
+          {
             "node": "Google Sheets",
             "type": "main",
             "index": 0
@@ -322,10 +469,17 @@
             "type": "main",
             "index": 0
           }
+        ],
+        [
+          {
+            "node": "Mark Needs Review",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     },
-    "If": {
+    "Research Needed?": {
       "main": [
         [
           {
